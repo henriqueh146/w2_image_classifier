@@ -33,7 +33,7 @@ def main():
     checkpoint_callback = ModelCheckpoint(
         monitor="val_loss",
         dirpath="models",
-        filename="horse_human",
+        filename="horse_human_classifier",
         save_top_k=1,
         mode="min"
     )
