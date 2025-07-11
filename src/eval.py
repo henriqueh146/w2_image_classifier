@@ -20,7 +20,7 @@ def evaluate_model():
     loader = DataLoader(dataset, batch_size=32, shuffle=False)
 
     
-    model = BinaryImageClassifier.load_from_checkpoint("models/horse_human-v2.ckpt")
+    model = BinaryImageClassifier.load_from_checkpoint("models/horse_human_classifier.ckpt")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     model.eval()
