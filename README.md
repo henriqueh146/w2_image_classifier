@@ -41,7 +41,8 @@ Requisitos: Python 3.10+
 # Instalar Poetry
 curl -sSL https://install.python-poetry.org | python3 -
 
-# Clonar o projeto. Os dados de treinamento e validação já estão disponíveis no próprio repositório por conveniência.
+# Clonar o projeto. 
+# Obs: Os dados de treinamento e validação já estão disponíveis no próprio repositório por conveniência. Não foi possível enviar o modelo para o repositório devido seu tamanho ser superior a 100MB. Será necessário treinar localmente para validação.
 git clone https://github.com/henriqueh146/w2_image_classifier.git
 cd w2_image_classifier
 
