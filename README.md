@@ -1,4 +1,4 @@
-# Classificador Binário de Imagens - Cavalos x Humanos
+# Parte 1: Classificador Binário de Imagens - Cavalos x Humanos
 
 Este projeto realiza a classificação binária de imagens para identificar se a imagem enviada representa um **cavalo** (`horse`) ou um **humano** (`human`). Ele inclui treinamento, avaliação e inferência via API REST.
 
@@ -120,3 +120,74 @@ Testes automatizados de inferência
 Implementar data augmentation no treino
 
 Deploy monitorado com Prometheus
+
+---
+---
+
+# Parte 2: Arquitetura de Operacionalização para Classificação de Imagens e Vídeos em Alta Escala
+
+## Visão Geral
+
+O sistema proposto tem como objetivo classificar imagens e vídeos de múltiplas fontes e classes em escala empresarial, suportando treinamento contínuo, atualização do modelo e inferência em tempo real.
+
+A arquitetura é dividida em três grandes blocos:
+1. Coleta e Ingestão de Dados
+2. Processamento e Treinamento Distribuído
+3. Inferência e Serviçamento via API
+
+![Arquitetura do Sistema](images/arquitetura.jpg)
+
+## Componentes do Sistema
+
+### 1. Fontes de Dados
+- Imagens/Vídeos: provenientes de câmeras ou uploads de usuários.
+- APIs Externas: fontes públicas ou privadas (ex: Open Images, sistemas de segurança, etc.).
+- Bases de Dados: armazenamentos relacionais ou NoSQL contendo metadados ou labels.
+- Arquivos: datasets CSV, Parquet ou JSON com rótulos, logs ou metadados.
+
+### 2. Data Processing
+- Pipeline para coleta, limpeza, transformação e padronização os dados.
+- Pode usar Spark para escala.
+- Imagens são armazenadas em Object Storage (como Amazon S3, GCS, Azure Blob) com versionamento.
+
+### 3. Object Storage
+Armazena os artefatos brutos e pré-processados (imagens, vídeos, datasets).
+
+### 4. Feature Store
+- Repositório central de features extraídas ou criadas.
+- Garante consistência entre treino e inferência.
+- Exemplo: Databricks Feature Store.
+
+### 5. Treinamento Distribuído
+- Utiliza recursos escaláveis (GPU clusters) via frameworks como:
+  - PyTorch Lightning, HuggingFace Accelerate
+  - Infraestrutura: Kubernetes + Ray, SageMaker, Vertex AI Training, Databricks
+- Integração com MLFlow para rastreabilidade.
+
+### 6. Inference Engine
+Pipeline de inferência desacoplado do pipeline de treino. Pode ser batch ou online.
+
+### 7. REST API
+- Serviço de inferência exposto via FastAPI.
+- Recebe imagem como input e retorna a classe prevista.
+- Pode ser hospedado em um cluster Kubernetes com autoescalonamento, cache e monitoramento.
+
+## Justificativas Técnicas
+
+### Decisão Justificativa
+| Decisão                      | Justificativa                                                               |
+|-----------------------------|------------------------------------------------------------------------------|
+| ResNet + Transfer Learning  | Evita treinar do zero com poucos dados, reduz custo computacional.           |
+| PyTorch Lightning           | Escalável, modular, integra com MLFlow e facilita produção.                  |
+| Object Storage              | Suporte nativo a arquivos grandes, barato, versionável.                      |
+| Feature Store               | Permite consistência entre produção e treinamento.                           |
+| API REST                    | Ponto de entrada simples e universal para sistemas consumidores.             |
+| Treinamento distribuído     | Necessário para lidar com dados de alta resolução e múltiplas classes.       |
+| Pipeline unificado de dados | Evita silos de dados e garante qualidade do dado de entrada.                 |
+
+### Integração e Entrega Contínuas
+Este sistema suporta treinamento e revalidação contínua, com CI/CD de modelos e dados, seguindo os princípios de MLOps:
+
+1. Dados novos ingeridos regularmente.
+2. Métricas monitoradas em produção.
+3. Gatilhos de retreinamento automático com novos dados ou degradação de performance.
